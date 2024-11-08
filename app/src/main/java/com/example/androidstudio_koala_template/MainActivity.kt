@@ -11,16 +11,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.androidstudio_koala_template.ui.theme.AndroidStudioKoalaTemplateTheme
@@ -45,7 +49,7 @@ fun Repte() {
         // Secció del Títol
         Text(text = "Repte 01")
 
-        // Secció del Dropdown amb una colecció de hobbies (d'exemple)
+        // Secció del Dropdown amb una colecció d'icones
         DropDownMenu()
 
         // Textfields per a mínim i màxim del Slider
@@ -54,7 +58,7 @@ fun Repte() {
         // Secció del Slider (Placeholder de moment)
         Sliders()
 
-        // Botó per enviar el formulàri
+        // Botó per enviar el formulari
         Button(
             onClick = { /* Lògica per enviar el formulari */ },
             modifier = Modifier
@@ -74,18 +78,37 @@ fun Repte() {
 
 @Composable
 fun DropDownMenu(modifier: Modifier = Modifier) {
-    // Estat per al text seleccionat i el desplegable
-    var selectedText by remember { mutableStateOf("") }
+    // Estat per a la icona seleccionada i el desplegable
+    var selectedIcon by remember { mutableStateOf<ImageVector?>(null) }
     var expanded by remember { mutableStateOf(false) }
-    val hobbies = listOf("Play music", "Practice sport", "Programming", "Reading", "Other")
+
+    // Llista d'icones per defecte
+    val icons = listOf(
+        Icons.Default.Home,
+        Icons.Default.Favorite,
+        Icons.Default.Settings,
+        Icons.Default.Share,
+        Icons.Default.Info,
+        Icons.Default.Person,
+        Icons.Default.Phone,
+        Icons.Default.Email,
+        Icons.Default.Lock,
+        Icons.Default.Check,
+        Icons.Default.Close,
+        Icons.Default.Delete,
+        Icons.Default.Edit,
+        Icons.Default.Menu,
+        Icons.Default.Search,
+        Icons.Default.Star,
+    )
 
     Column(
         Modifier
             .padding(20.dp)
     ) {
         OutlinedTextField(
-            value = selectedText,
-            onValueChange = { selectedText = it },
+            value = selectedIcon?.name ?: "Selecciona una icona",
+            onValueChange = {},
             enabled = false,
             readOnly = true,
             modifier = Modifier
@@ -100,13 +123,14 @@ fun DropDownMenu(modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .border(1.dp, Color.Black, RoundedCornerShape(4.dp)) // Afegim estil al Dropdown
         ) {
-            hobbies.forEach { hobby ->
+            icons.forEach { icon ->
                 DropdownMenuItem(
-                    text = { Text(hobby) }, // Mostrem el hobby com a text
+                    text = { Text(icon.name) }, // Mostrem el nom de la icona com a text
                     onClick = {
                         expanded = false // Tanquem el desplegable
-                        selectedText = hobby // Assignem el hobby seleccionat
-                    }
+                        selectedIcon = icon // Assignem la icona seleccionada
+                    },
+                    leadingIcon = { Icon(imageVector = icon, contentDescription = icon.name) }
                 )
             }
         }
