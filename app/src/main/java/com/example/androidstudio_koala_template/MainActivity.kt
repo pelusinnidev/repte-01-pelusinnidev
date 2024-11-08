@@ -18,6 +18,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,6 +26,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.androidstudio_koala_template.ui.theme.AndroidStudioKoalaTemplateTheme
@@ -45,9 +47,20 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Repte() {
-    Column {
+    Column(
+        // Els
+        Modifier
+            .padding(start = 25.dp, end = 25.dp)
+            .padding(top = 50.dp)
+    ) {
         // Secció del Títol
-        Text(text = "Repte 01")
+        Text(
+            text = "Repte 01",
+            style = MaterialTheme.typography.headlineMedium.copy(
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF0D47A1) // Blau fosc
+            )
+        )
 
         // Secció del Dropdown amb una colecció d'icones
         DropDownMenu()
@@ -104,7 +117,7 @@ fun DropDownMenu(modifier: Modifier = Modifier) {
 
     Column(
         Modifier
-            .padding(20.dp)
+            .padding(top = 16.dp, bottom = 16.dp)
     ) {
         OutlinedTextField(
             value = selectedIcon?.name ?: "Selecciona una icona",
