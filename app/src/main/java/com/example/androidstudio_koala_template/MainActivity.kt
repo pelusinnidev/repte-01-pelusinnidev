@@ -1,5 +1,3 @@
-package com.example.androidstudio_koala_template
-
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -9,13 +7,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Badge
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -23,7 +23,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -113,6 +112,7 @@ fun Repte() {
     var minValue by remember { mutableStateOf("") }
     var maxValue by remember { mutableStateOf("") }
     var sliderValue by remember { mutableStateOf(0f) }
+    var selectedIcon by remember { mutableStateOf<ImageVector?>(null) }
 
     Column(
         modifier = Modifier
@@ -161,7 +161,7 @@ fun Repte() {
         HorizontalDivider()
 
         // Mostra el resultat amb una composició dels valors seleccionats
-        Result()
+        Result(sliderValue = sliderValue, selectedIcon = selectedIcon)
     }
 }
 
@@ -231,9 +231,29 @@ fun Sliders(
 }
 
 @Composable
-fun Result() {
-    // Placeholder per mostrar el resultat final
-    Text(text = "Resultat")
+fun Result(
+    sliderValue: Float,
+    selectedIcon: ImageVector?
+) {
+    BadgedBox(
+        modifier = Modifier.padding(16.dp),
+        badge = {
+            Badge {
+                Text(sliderValue.toInt().toString())
+            }
+        },
+        content = {
+            if (selectedIcon != null) {
+                Icon(
+                    imageVector = selectedIcon,
+                    contentDescription = selectedIcon.name,
+                    modifier = Modifier.size(32.dp)
+                )
+            } else {
+                Text("No icon selected")
+            }
+        }
+    )
 }
 
 @Preview(showBackground = true, showSystemUi = true)
