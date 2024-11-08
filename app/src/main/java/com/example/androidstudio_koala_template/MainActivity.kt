@@ -11,16 +11,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,31 +45,43 @@ fun Repte() {
         // Secció del Títol
         Text(text = "Repte 01")
 
-        // Secció del Dropdown amb una colecció dels Icons.Default (tots o mínim 10)
+        // Secció del Dropdown amb una colecció de hobbies (d'exemple)
         DropDownMenu()
 
-        // Secció amb els Textfields de Mínim i Màxim (valors del Slider(min i max))
+        // Textfields per a mínim i màxim del Slider
         Textfields()
 
-        // Secció amb el Slider
+        // Secció del Slider (Placeholder de moment)
         Sliders()
 
-        // Dividim les Seccions amb un Divider
+        // Botó per enviar el formulàri
+        Button(
+            onClick = { /* Lògica per enviar el formulari */ },
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            Text(text = "Enviar")
+        }
+
+        // Divider per separar seccions
         HorizontalDivider()
 
-        // Mostem el resultat (BadgedBox) amb: Icon(DropDownMenu) + Number(Slider + TextFields)
+        // Mostra el resultat amb una composició dels valors seleccionats
         Result()
     }
 }
 
 @Composable
 fun DropDownMenu(modifier: Modifier = Modifier) {
-    var selectedText: String by remember { mutableStateOf("") }
-    var expanded: Boolean by remember { mutableStateOf(false) }
+    // Estat per al text seleccionat i el desplegable
+    var selectedText by remember { mutableStateOf("") }
+    var expanded by remember { mutableStateOf(false) }
     val hobbies = listOf("Play music", "Practice sport", "Programming", "Reading", "Other")
+
     Column(
         Modifier
-            .padding(20.dp, 80.dp)
+            .padding(20.dp)
     ) {
         OutlinedTextField(
             value = selectedText,
@@ -79,7 +89,7 @@ fun DropDownMenu(modifier: Modifier = Modifier) {
             enabled = false,
             readOnly = true,
             modifier = Modifier
-                .clickable { expanded = true }
+                .clickable { expanded = true } // Mostrem el desplegable quan fem clic
                 .fillMaxWidth()
         )
 
@@ -88,16 +98,16 @@ fun DropDownMenu(modifier: Modifier = Modifier) {
             onDismissRequest = { expanded = false },
             modifier = Modifier
                 .fillMaxWidth()
-                // Afegir colors i detalls al desplegable:
-                .border(1.dp, Color.Black, RoundedCornerShape(4.dp))
+                .border(1.dp, Color.Black, RoundedCornerShape(4.dp)) // Afegim estil al Dropdown
         ) {
             hobbies.forEach { hobby ->
                 DropdownMenuItem(
-                    text = { Icons.Default },
+                    text = { Text(hobby) }, // Mostrem el hobby com a text
                     onClick = {
-                        expanded = false
-                        selectedText = hobby
-                    })
+                        expanded = false // Tanquem el desplegable
+                        selectedText = hobby // Assignem el hobby seleccionat
+                    }
+                )
             }
         }
     }
@@ -105,17 +115,20 @@ fun DropDownMenu(modifier: Modifier = Modifier) {
 
 @Composable
 fun Textfields() {
+    // Placeholder per als Textfields (p. ex., valors de mínim i màxim)
     Text(text = "Textfields")
 }
 
 @Composable
 fun Sliders() {
-    Text(text = "Textfields")
+    // Placeholder per al Slider
+    Text(text = "Slider")
 }
 
 @Composable
 fun Result() {
-    Text(text = "Textfields")
+    // Placeholder per mostrar el resultat final
+    Text(text = "Resultat")
 }
 
 @Preview(showBackground = true, showSystemUi = true)
