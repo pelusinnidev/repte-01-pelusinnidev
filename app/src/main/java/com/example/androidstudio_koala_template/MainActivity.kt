@@ -152,8 +152,56 @@ fun DropDownMenu(modifier: Modifier = Modifier) {
 
 @Composable
 fun Textfields() {
-    // Placeholder per als Textfields (p. ex., valors de mínim i màxim)
-    Text(text = "Textfields")
+    // Definim els estats per als valors mínim i màxim
+    var minValue by remember { mutableStateOf("") }
+    var maxValue by remember { mutableStateOf("") }
+
+    // Mostrem els Textfields dins d'una columna
+    Column(modifier = Modifier.padding(vertical = 16.dp)) {
+        // TextField per al valor mínim
+        OutlinedTextField(
+            value = minValue,
+            onValueChange = { newValue ->
+                // Validació simple per permetre només valors numèrics
+                if (newValue.all { it.isDigit() }) {
+                    minValue = newValue
+                }
+            },
+            label = { Text("Valor mínim") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp)
+        )
+
+        // TextField per al valor màxim
+        OutlinedTextField(
+            value = maxValue,
+            onValueChange = { newValue ->
+                // Validació simple per permetre només valors numèrics
+                if (newValue.all { it.isDigit() }) {
+                    maxValue = newValue
+                }
+            },
+            label = { Text("Valor màxim") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp)
+        )
+
+        // Validem que el mínim sigui inferior al màxim i mostrem un missatge d'error si no és així
+        if (minValue.isNotEmpty() && maxValue.isNotEmpty()) {
+            val minVal = minValue.toIntOrNull()
+            val maxVal = maxValue.toIntOrNull()
+
+            if (minVal != null && maxVal != null && minVal >= maxVal) {
+                Text(
+                    text = "El valor mínim ha de ser menor que el valor màxim.",
+                    color = Color.Red,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+        }
+    }
 }
 
 @Composable
