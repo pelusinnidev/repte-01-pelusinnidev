@@ -6,10 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -37,9 +40,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AndroidStudioKoalaTemplateTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Repte()
-                }
+                Repte()
             }
         }
     }
@@ -152,55 +153,41 @@ fun DropDownMenu(modifier: Modifier = Modifier) {
 
 @Composable
 fun Textfields() {
-    // Definim els estats per als valors mínim i màxim
     var minValue by remember { mutableStateOf("") }
     var maxValue by remember { mutableStateOf("") }
 
-    // Mostrem els Textfields dins d'una columna
-    Column(modifier = Modifier.padding(vertical = 16.dp)) {
+    // Organitzem els TextFields dins d'una fila amb espai entre ells
+    Row(
+        modifier = Modifier
+            .padding(top = 16.dp, bottom = 16.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween // Espai entre els Fields
+    ) {
         // TextField per al valor mínim
         OutlinedTextField(
             value = minValue,
             onValueChange = { newValue ->
-                // Validació simple per permetre només valors numèrics
                 if (newValue.all { it.isDigit() }) {
                     minValue = newValue
                 }
             },
             label = { Text("Valor mínim") },
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp)
+                .width(150.dp) // Establim un tamany fixe
         )
 
         // TextField per al valor màxim
         OutlinedTextField(
             value = maxValue,
             onValueChange = { newValue ->
-                // Validació simple per permetre només valors numèrics
                 if (newValue.all { it.isDigit() }) {
                     maxValue = newValue
                 }
             },
             label = { Text("Valor màxim") },
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp)
+                .width(150.dp) // Establim un tamany fixe
         )
-
-        // Validem que el mínim sigui inferior al màxim i mostrem un missatge d'error si no és així
-        if (minValue.isNotEmpty() && maxValue.isNotEmpty()) {
-            val minVal = minValue.toIntOrNull()
-            val maxVal = maxValue.toIntOrNull()
-
-            if (minVal != null && maxVal != null && minVal >= maxVal) {
-                Text(
-                    text = "El valor mínim ha de ser menor que el valor màxim.",
-                    color = Color.Red,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
-        }
     }
 }
 
