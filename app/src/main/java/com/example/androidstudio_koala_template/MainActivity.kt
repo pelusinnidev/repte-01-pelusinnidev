@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -43,50 +44,6 @@ class MainActivity : ComponentActivity() {
                 Repte()
             }
         }
-    }
-}
-
-@Composable
-fun Repte() {
-    Column(
-        // Els
-        Modifier
-            .padding(start = 25.dp, end = 25.dp)
-            .padding(top = 50.dp)
-    ) {
-        // Secció del Títol
-        Text(
-            text = "Repte 01",
-            style = MaterialTheme.typography.headlineMedium.copy(
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF0D47A1) // Blau fosc
-            )
-        )
-
-        // Secció del Dropdown amb una colecció d'icones
-        DropDownMenu()
-
-        // Textfields per a mínim i màxim del Slider
-        Textfields()
-
-        // Secció del Slider (Placeholder de moment)
-        Sliders()
-
-        // Botó per enviar el formulari
-        Button(
-            onClick = { /* Lògica per enviar el formulari */ },
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
-        ) {
-            Text(text = "Enviar")
-        }
-
-        // Divider per separar seccions
-        HorizontalDivider()
-
-        // Mostra el resultat amb una composició dels valors seleccionats
-        Result()
     }
 }
 
@@ -152,10 +109,69 @@ fun DropDownMenu(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun Textfields() {
+fun Repte() {
     var minValue by remember { mutableStateOf("") }
     var maxValue by remember { mutableStateOf("") }
+    var sliderValue by remember { mutableStateOf(0f) }
 
+    Column(
+        modifier = Modifier
+            .padding(start = 25.dp, end = 25.dp)
+            .padding(top = 50.dp)
+    ) {
+        // Secció del Títol
+        Text(
+            text = "Repte 01",
+            style = MaterialTheme.typography.headlineMedium.copy(
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF0D47A1) // Blau fosc
+            )
+        )
+
+        // Secció del Dropdown amb una colecció d'icones
+        DropDownMenu()
+
+        // Textfields per a mínim i màxim del Slider
+        Textfields(
+            minValue = minValue,
+            maxValue = maxValue,
+            onMinValueChange = { minValue = it },
+            onMaxValueChange = { maxValue = it }
+        )
+
+        // Secció del Slider
+        Sliders(
+            minValue = minValue,
+            maxValue = maxValue,
+            sliderValue = sliderValue,
+            onSliderValueChange = { sliderValue = it }
+        )
+
+        // Botó per enviar el formulari
+        Button(
+            onClick = { /* Lògica per enviar el formulari */ },
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+        ) {
+            Text(text = "Enviar")
+        }
+
+        // Divider per separar seccions
+        HorizontalDivider()
+
+        // Mostra el resultat amb una composició dels valors seleccionats
+        Result()
+    }
+}
+
+@Composable
+fun Textfields(
+    minValue: String,
+    maxValue: String,
+    onMinValueChange: (String) -> Unit,
+    onMaxValueChange: (String) -> Unit
+) {
     // Organitzem els TextFields dins d'una fila amb espai entre ells
     Row(
         modifier = Modifier
@@ -168,7 +184,7 @@ fun Textfields() {
             value = minValue,
             onValueChange = { newValue ->
                 if (newValue.all { it.isDigit() }) {
-                    minValue = newValue
+                    onMinValueChange(newValue)
                 }
             },
             label = { Text("Valor mínim") },
@@ -181,7 +197,7 @@ fun Textfields() {
             value = maxValue,
             onValueChange = { newValue ->
                 if (newValue.all { it.isDigit() }) {
-                    maxValue = newValue
+                    onMaxValueChange(newValue)
                 }
             },
             label = { Text("Valor màxim") },
@@ -192,9 +208,26 @@ fun Textfields() {
 }
 
 @Composable
-fun Sliders() {
-    // Placeholder per al Slider
-    Text(text = "Slider")
+fun Sliders(
+    minValue: String,
+    maxValue: String,
+    sliderValue: Float,
+    onSliderValueChange: (Float) -> Unit
+) {
+    val min = minValue.toIntOrNull() ?: 0 // Valor mínim per al Slider
+    val max = maxValue.toIntOrNull() ?: 100 // Valor màxim per al Slider
+
+    // Slider que usa els valors dels TextFields
+    Column(modifier = Modifier.padding(top = 16.dp)) {
+        Text(text = "Valor del Slider: ${sliderValue.toInt()}")
+        Slider(
+            value = sliderValue,
+            onValueChange = { onSliderValueChange(it) },
+            valueRange = min.toFloat()..max.toFloat(),
+            steps = max - min - 1, // Divisions del slider (tallets)
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
 }
 
 @Composable
