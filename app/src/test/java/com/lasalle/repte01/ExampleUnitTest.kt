@@ -1,4 +1,4 @@
-package com.example.androidstudio_koala_template
+package com.lasalle.repte01
 
 import org.junit.Test
 

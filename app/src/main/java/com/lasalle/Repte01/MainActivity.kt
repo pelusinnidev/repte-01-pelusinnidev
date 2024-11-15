@@ -1,3 +1,5 @@
+package com.lasalle.repte01
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,29 +32,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.androidstudio_koala_template.ui.theme.AndroidStudioKoalaTemplateTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            AndroidStudioKoalaTemplateTheme {
-                Repte()
-            }
+            Repte()
         }
     }
 }
 
 @Composable
-fun DropDownMenu(modifier: Modifier = Modifier) {
-    // Estat per a la icona seleccionada i el desplegable
-    var selectedIcon by remember { mutableStateOf<ImageVector?>(null) }
+fun DropDownMenu(
+    selectedIcon: ImageVector?,
+    onIconSelected: (ImageVector) -> Unit, // Callback para actualizar el icono seleccionado
+    modifier: Modifier = Modifier
+) {
     var expanded by remember { mutableStateOf(false) }
 
-    // Llista d'icones per defecte
     val icons = listOf(
         Icons.Default.Home,
         Icons.Default.Favorite,
@@ -82,7 +81,7 @@ fun DropDownMenu(modifier: Modifier = Modifier) {
             enabled = false,
             readOnly = true,
             modifier = Modifier
-                .clickable { expanded = true } // Mostrem el desplegable quan fem clic
+                .clickable { expanded = true }
                 .fillMaxWidth()
         )
 
@@ -91,14 +90,14 @@ fun DropDownMenu(modifier: Modifier = Modifier) {
             onDismissRequest = { expanded = false },
             modifier = Modifier
                 .fillMaxWidth()
-                .border(1.dp, Color.Black, RoundedCornerShape(4.dp)) // Afegim estil al Dropdown
+                .border(1.dp, Color.Black, RoundedCornerShape(4.dp))
         ) {
             icons.forEach { icon ->
                 DropdownMenuItem(
-                    text = { Text(icon.name) }, // Mostrem el nom de la icona com a text
+                    text = { Text(icon.name) },
                     onClick = {
-                        expanded = false // Tanquem el desplegable
-                        selectedIcon = icon // Assignem la icona seleccionada
+                        expanded = false
+                        onIconSelected(icon) // Actualizamos el icono seleccionado
                     },
                     leadingIcon = { Icon(imageVector = icon, contentDescription = icon.name) }
                 )
@@ -119,19 +118,20 @@ fun Repte() {
             .padding(start = 25.dp, end = 25.dp)
             .padding(top = 50.dp)
     ) {
-        // Secció del Títol
         Text(
             text = "Repte 01",
             style = MaterialTheme.typography.headlineMedium.copy(
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF0D47A1) // Blau fosc
+                color = Color(0xFF0D47A1)
             )
         )
 
-        // Secció del Dropdown amb una colecció d'icones
-        DropDownMenu()
+        // Sección del DropdownMenu
+        DropDownMenu(
+            selectedIcon = selectedIcon,
+            onIconSelected = { selectedIcon = it } // Actualizamos el estado global
+        )
 
-        // Textfields per a mínim i màxim del Slider
         Textfields(
             minValue = minValue,
             maxValue = maxValue,
@@ -139,7 +139,6 @@ fun Repte() {
             onMaxValueChange = { maxValue = it }
         )
 
-        // Secció del Slider
         Sliders(
             minValue = minValue,
             maxValue = maxValue,
@@ -147,9 +146,8 @@ fun Repte() {
             onSliderValueChange = { sliderValue = it }
         )
 
-        // Botó per enviar el formulari
         Button(
-            onClick = { /* Lògica per enviar el formulari */ },
+            onClick = { /* Lógica para enviar el formulario */ },
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()
@@ -157,10 +155,8 @@ fun Repte() {
             Text(text = "Enviar")
         }
 
-        // Divider per separar seccions
         HorizontalDivider()
 
-        // Mostra el resultat amb una composició dels valors seleccionats
         Result(sliderValue = sliderValue, selectedIcon = selectedIcon)
     }
 }
@@ -172,14 +168,12 @@ fun Textfields(
     onMinValueChange: (String) -> Unit,
     onMaxValueChange: (String) -> Unit
 ) {
-    // Organitzem els TextFields dins d'una fila amb espai entre ells
     Row(
         modifier = Modifier
             .padding(top = 16.dp, bottom = 16.dp)
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween // Espai entre els Fields
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // TextField per al valor mínim
         OutlinedTextField(
             value = minValue,
             onValueChange = { newValue ->
@@ -188,11 +182,9 @@ fun Textfields(
                 }
             },
             label = { Text("Valor mínim") },
-            modifier = Modifier
-                .width(150.dp) // Establim un tamany fixe
+            modifier = Modifier.width(150.dp)
         )
 
-        // TextField per al valor màxim
         OutlinedTextField(
             value = maxValue,
             onValueChange = { newValue ->
@@ -201,8 +193,7 @@ fun Textfields(
                 }
             },
             label = { Text("Valor màxim") },
-            modifier = Modifier
-                .width(150.dp) // Establim un tamany fixe
+            modifier = Modifier.width(150.dp)
         )
     }
 }
@@ -214,17 +205,16 @@ fun Sliders(
     sliderValue: Float,
     onSliderValueChange: (Float) -> Unit
 ) {
-    val min = minValue.toIntOrNull() ?: 0 // Valor mínim per al Slider
-    val max = maxValue.toIntOrNull() ?: 100 // Valor màxim per al Slider
+    val min = minValue.toIntOrNull() ?: 0
+    val max = maxValue.toIntOrNull() ?: 100
 
-    // Slider que usa els valors dels TextFields
     Column(modifier = Modifier.padding(top = 16.dp)) {
         Text(text = "Valor del Slider: ${sliderValue.toInt()}")
         Slider(
             value = sliderValue,
             onValueChange = { onSliderValueChange(it) },
             valueRange = min.toFloat()..max.toFloat(),
-            steps = max - min - 1, // Divisions del slider (tallets)
+            steps = max - min - 1,
             modifier = Modifier.fillMaxWidth()
         )
     }
@@ -235,31 +225,29 @@ fun Result(
     sliderValue: Float,
     selectedIcon: ImageVector?
 ) {
-    BadgedBox(
-        modifier = Modifier.padding(16.dp),
-        badge = {
-            Badge {
-                Text(sliderValue.toInt().toString())
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp), // Asegura espacio alrededor
+        horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally // Centra horizontalmente
+    ) {
+        BadgedBox(
+            badge = {
+                Badge {
+                    Text(sliderValue.toInt().toString())
+                }
+            },
+            content = {
+                if (selectedIcon != null) {
+                    Icon(
+                        imageVector = selectedIcon,
+                        contentDescription = selectedIcon.name,
+                        modifier = Modifier.size(32.dp)
+                    )
+                } else {
+                    Text("No icon selected")
+                }
             }
-        },
-        content = {
-            if (selectedIcon != null) {
-                Icon(
-                    imageVector = selectedIcon,
-                    contentDescription = selectedIcon.name,
-                    modifier = Modifier.size(32.dp)
-                )
-            } else {
-                Text("No icon selected")
-            }
-        }
-    )
-}
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun ReptePreview() {
-    AndroidStudioKoalaTemplateTheme {
-        Repte()
+        )
     }
 }

@@ -1,4 +1,4 @@
-package com.example.androidstudio_koala_template.ui.theme
+package com.lasalle.repte01.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

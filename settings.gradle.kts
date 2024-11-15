@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AndroidStudio-Koala-Template"
+rootProject.name = "Repte01"
 include(":app")
  
